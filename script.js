@@ -88,10 +88,19 @@ var upperCasedCharacters = [
   'Z'
 ];
 
+// Global variables to store user choices
+var includeLowerCase;
+var includeUpperCase;
+var includeNumeric;
+var includeSpecial;
+
+var pool = [];
+var passwordLength;
+
 // Function to prompt user for password options
 function getPasswordOptions() {
   // Prompt for the lenght
-  let passwordLength = prompt("Enter the length of the password. At least 8 characters, but no more than 128.");
+  passwordLength = prompt("Enter the length of the password. At least 8 characters, but no more than 128.");
   // Validate the password length
   if (passwordLength < 8 || passwordLength > 128) {
     alert("Password length must be between 8 and 128 characters.")
@@ -103,10 +112,10 @@ function getPasswordOptions() {
     return; // Exit the function
   }
   // Prompt for the character types
-  let includeLowerCase = confirm("Would you like to include lowercase characters?");
-  let includeUpperCase = confirm("Would you like to include uppercase characters?");
-  let includeNumeric = confirm("Would you like to include numbers?");
-  let includeSpecial = confirm("Would you like to include special characters?");
+  includeLowerCase = confirm("Would you like to include lowercase characters?");
+  includeUpperCase = confirm("Would you like to include uppercase characters?");
+  includeNumeric = confirm("Would you like to include numbers?");
+  includeSpecial = confirm("Would you like to include special characters?");
 
   // Validate that at least one character type is selecter
   if (!includeLowerCase && !includeUpperCase && !includeNumeric && !includeSpecial) {
@@ -116,13 +125,36 @@ function getPasswordOptions() {
 }
 
 // Function for getting a random element from an array
-function getRandom(arr) {
-
+function getRandom() {
+  if (includeLowerCase) {
+    pool = pool.concat(lowerCasedCharacters);
+  }
+  if (includeUpperCase) {
+    pool = pool.concat(upperCasedCharacters);
+  }
+  if (includeNumeric) {
+    pool = pool.concat(numericCharacters);
+  }
+  if (includeSpecial) {
+    pool = pool.concat(specialCharacters);
+  }
 }
 
 // Function to generate password with user input
 function generatePassword() {
+  getRandom(); // Pool of characters
+  let password = "";
+  for (let i = 0; i < passwordLength; i++) {
+    let randomIndex = Math.floor(Math.random() * pool.length);
+    password += pool[randomIndex];
+  }
+  return password;
+}
 
+// Updates the value of the input area
+function updatePasswordTextarea(password) {
+  var passwordText = document.querySelector('#password');
+  passwordText.value = password;
 }
 
 // Get references to the #generate element
@@ -131,10 +163,11 @@ var generateBtn = document.querySelector('#generate');
 // Write password to the #password input
 function writePassword() {
   var password = generatePassword();
-  var passwordText = document.querySelector('#password');
-
-  passwordText.value = password;
+  updatePasswordTextarea(password);
 }
 
 // Add event listener to generate button
-generateBtn.addEventListener('click', writePassword);
+generateBtn.addEventListener('click', function () {
+  getPasswordOptions();
+  writePassword();
+});
