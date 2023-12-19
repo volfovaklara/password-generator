@@ -16,9 +16,9 @@ This project is an application that anybody can use to generate a random passwor
 ### User Story
 > AS A consumer
 
-> I WANT generate a random password
+> I WANT to generate a random password
 
-> SO THAT I don't use the same passwords everytime
+> SO THAT I don't use the same password everytime
 
 ### Acceptance Criteria
 > 1. Generate a password when the button is clicked.
